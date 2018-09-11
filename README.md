@@ -1,9 +1,13 @@
 # Calendar
 Laravel 5 Calendar
 
+##Information
+
+This package is a clone of codeapps/calendar with appearance changes and to work in Laravel version > 5.2.
+
 ##Installation
 
-Require codeapps/calendar in composer.json and run composer update.
+Require bbcreation/calendar in composer.json and run composer update.
 
 ```
 {
@@ -46,7 +50,7 @@ Include css in your view
 
 ```
 
-Create a Controller 
+Create a Controller
 
 ```
 use Codeapps\Calendar\Calendar as Calendar;
@@ -72,9 +76,8 @@ public function create()
   }
 ```
 
-Create a View and Add 
+Create a View and Add
 
 ```
 {!! Calendar::render($data,['title'=>'Codeapps'])!!}
 ```
-
