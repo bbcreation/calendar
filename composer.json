@@ -1,5 +1,5 @@
 {
-    "name": "codeapps/calendar",
+    "name": "bbcreation/Calendar-master",
     "version": "1.0",
     "license": "MIT",
     "description": "Best Calendar Library to Render Fancy Gantt Events with Laravel 5 Compatibility",
@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "illuminate/support": "5.2.*"
+        "illuminate/support": "5.*"
     },
     "autoload": {
       "classmap": [
