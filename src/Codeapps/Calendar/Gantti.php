@@ -4,6 +4,7 @@ namespace Codeapps\Calendar;
 
 class Gantti {
 
+
     var $cal       = null;
     var $data      = [];
     var $first     = false;
@@ -17,9 +18,9 @@ class Gantti {
     var $seconds   = 0;
     private $defaults = [
         'title'      => 'Product',
-        'cellwidth'  => 35,
-        'cellheight' => 35,
-        'today'      => true,
+        'cellwidth'  => 53,
+        'cellheight' => 70,
+        'today'      => false,
     ];
 
     function __construct() {
@@ -87,7 +88,9 @@ class Gantti {
         // build the months
         while ($current->lastDay()->timestamp <= $lastDay) {
             $month          = $current->month();
+            $year          = $current->year();
             $this->months[] = $month;
+            $this->year[] = $year;
             foreach ($month->days() as $day) {
                 // if( $month == $current month && $day + $offset_days > $today)
                 $this->days[] = $day;
@@ -146,8 +149,26 @@ class Gantti {
         // months headers
         $html[] = '<ul class="gantt-months" ' . $totalstyle . '>';
         foreach ($this->months as $month) {
-            $html[] = '<li class="gantt-month" style="width: ' . ($this->options['cellwidth'] * $month->countDays()) . 'px"><strong ' . $cellstyle . '>' . $month->name() . '</strong></li>';
+
+
+        $polishmo = array(
+            'January'=>'Styczeń',
+            'February'=>'Luty',
+            'March'=>'Marzec',
+            'April'=>'Kwiecień',
+            'May'=>'Maj',
+            'June'=>'Czerwiec',
+            'July'=>'Lipiec',
+            'August'=>'Sierpień',
+            'September'=>'Wrzesień',
+            'October'=>'Październik',
+            'November'=>'Listopad',
+            'December'=>'Grudzień',
+         );
+
+$html[] = '<li class="gantt-month" style="width: ' . ($this->options['cellwidth'] * $month->countDays()) . 'px"><strong ' . $cellstyle . '>' . $polishmo[ $month->name()] . ' ' .$month->year().' </strong></li>';
         }
+
         $html[] = '</ul>';
 
         // days headers
@@ -159,7 +180,14 @@ class Gantti {
             $weekend = ($day->isWeekend()) ? ' weekend' : '';
             $today   = ($day->isToday()) ? ' today' : '';
 
-            $html[] = '<li class="gantt-day' . $weekend . $today . '" ' . $wrapstyle . '><span ' . $cellstyle . '>' . $day->padded() . '</span></li>';
+            $polish = array( 'Nie', 'Pon', 'Wt', 'Sr', 'Czw', 'Pi', 'So' );
+            $timestamp = strtotime($day);
+            $dayn = date('w', $timestamp);
+            $pl = $polish[ $dayn ];
+
+
+
+            $html[] = '<li class="gantt-day' . $weekend . $today . '" ' . $wrapstyle . ' id="scroll"><span ' . $cellstyle . '>' . $day->padded() .'/'. $pl . '</span></li>';
         }
         $html[] = '</ul>';
 
@@ -235,25 +263,41 @@ class Gantti {
         if($days < 3) $label_shorten = null;
         elseif($days<8)
         {
-            $slova = $days * 2 + 3;
+            $slova = $days * 2 + 10;
             $label_shorten = substr($event['label'], 0, $slova).'...';
+
         }
-        else $label_shorten = $event['label'];
+        else $label_shorten = substr(strip_tags($event['label']), 0, 50).'...';
 
 
 
-
-        $html = '<span  class="gantt-block' . $class . '" style="left: ' . $left . 'px; width: ' . $width . 'px; height: ' . $height . 'px">';
+        if($icon == 1) {
+        $html = '<div  class="gantt-block" style="left: ' . $left . 'px; width: ' . $width . 'px; height: ' . $height . 'px; background: none;">';
+        } else {
+        $html = '<div  class="gantt-block" style="left: ' . $left . 'px; width: ' . $width . 'px; height: ' . $height . 'px; background: none;">';
+        }
 
         if($event['tooltip']) {
-            $html .='<a href="'.$url.'" style="margin-top:3px; margin-left:5px;" class="btn blue"  data-placement="top" tabindex="'.$i.'" data-html="true" data-trigger="focus" data-toggle="popover" title="'.$label.'" data-content="'.$tooltip.'"><i class="fa '.$icon.'"></i></a>';
+            $html .='<a href="'.$url.'" style="margin-top:3px; margin-left:5px;" class="btn blue"  data-placement="top" tabindex="'.$i.'" data-html="true" data-trigger="focus" data-toggle="popover" title="'.$label.'" data-content="'.$tooltip.'"><span style="margin-left:5px;"></span></a>';
         }
         else{
-            $html .='<a href="'.$url.'" style="margin-top:3px; margin-left:5px;" class="btn blue"><i class="fa '.$icon.'"></i></a>';
+            $html .='<a href="'.$url.'" style="margin-top:-4px; margin-left:5px;" class="btn blue"><span style="margin-left:5px;"></span></a>';
         }
 
-        $html .= '<span style="display: inline-block; margin-top:3px; margin-left:5px; color:white;">'.$label_shorten.'</span>';
-        $html .= '</span>';
+        if($icon == 1) {
+        $html .= '<button style="margin-left:-10px; color:white; width:100%;padding-left:15px;padding-right:15px; height:30px; margin-top:37px; "
+        data-toggle="popover" data-placement="top" data-content="'. strip_tags($event['label']).'"
+        class="' . $class . '">'.$label_shorten.'</button>';
+        } else {
+        $html .= '<button style="margin-left:-10px; color:white; width:100%;padding-left:15px;padding-right:15px;  height:30px; margin-top:5px;"
+        data-toggle="popover" data-placement="top" data-content="'. strip_tags($event['label']).'"
+        class="' . $class . '">'.$label_shorten.'</button>';
+        }
+
+
+//label_shorten
+
+        $html .= '</div>';
         return $html;
 
     }
@@ -268,7 +312,7 @@ class Gantti {
             $weekend = ($day->isWeekend()) ? ' weekend' : '';
             $today   = ($day->isToday()) ? ' today' : '';
 
-            $html .= '<li class="gantt-day' . $weekend . $today . '" ' . $wrapstyle . '><span ' . $cellstyle . '>' . $day . '</span></li>';
+            $html .= '<li class="gantt-day' . $weekend . $today . '" ' . $wrapstyle . ' id="scroll"><span ' . $cellstyle . '></span></li>';
         }
         $html .= '</ul>';
 
