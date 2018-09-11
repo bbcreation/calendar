@@ -1,0 +1,25 @@
+{
+    "name": "codeapps/calendar",
+    "version": "1.0",
+    "license": "MIT",
+    "description": "Best Calendar Library to Render Fancy Gantt Events with Laravel 5 Compatibility",
+    "authors": [
+        {
+            "name": "Codeapps",
+            "email": "codeapps@aol.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "illuminate/support": "5.2.*"
+    },
+    "autoload": {
+      "classmap": [
+        "src/Codeapps/Calendar"
+      ],
+      "psr-4": {
+          "Codeapps\\Calendar\\": "src/"
+      }
+    },
+    "minimum-stability": "stable"
+}
